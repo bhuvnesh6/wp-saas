@@ -739,7 +739,11 @@
                         <div class="qr-area" id="qr-${escHtml(c.instanceName)}"></div>
                     </div>
                 </div>
-            `).join("");
+            `).join("")
+               clients.forEach(c => {
+    refreshStatus(c.instanceName);
+});
+            ;
 
         } catch (err) {
             if (err.message !== "Unauthorized") {
@@ -880,6 +884,63 @@
         } catch (e) { /* handled */ }
     }
 
+
+    async function refreshStatus(name) {
+
+    try {
+
+        const res =
+            await api(
+                `/admin/status/${name}`
+            );
+
+        const data =
+            await res.json();
+
+        const badge =
+            document.getElementById(
+                `status-${name}`
+            );
+
+        if (!badge) return;
+
+        switch(data.status) {
+
+            case "READY":
+                badge.className =
+                    "status-badge running";
+
+                badge.textContent =
+                    "● Connected";
+                break;
+
+            case "WAITING_QR":
+                badge.className =
+                    "status-badge waiting";
+
+                badge.textContent =
+                    "● Scan QR";
+                break;
+
+            case "AUTHENTICATED":
+                badge.className =
+                    "status-badge waiting";
+
+                badge.textContent =
+                    "● Connecting";
+                break;
+
+            default:
+                badge.className =
+                    "status-badge idle";
+
+                badge.textContent =
+                    "● Offline";
+        }
+
+    } catch(err) {}
+}
+
     // ── UTILS ────────────────────────────────────────────────────
 
     function escHtml(str) {
@@ -906,6 +967,7 @@
     });
 
     loadClients();
+    setInterval(loadClients, 5000);
 </script>
 
 </body>

@@ -1,5 +1,7 @@
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode");
+
+const sessionStatus = {};
 //const puppeteer = require("puppeteer");
 
 const clients = {};
@@ -25,7 +27,7 @@ async function startClient(instanceName) {
         }),
 
         puppeteer: {
-            executablePath: process.env.CHROME_PATH || "/snap/bin/chromium",
+            executablePath: process.env.CHROME_PATH || "/usr/bin/chromium",
     headless: true,
     args: [
         "--no-sandbox",
@@ -38,6 +40,8 @@ async function startClient(instanceName) {
     client.on("qr", async (qr) => {
 
         try {
+
+            sessionStatus[instanceName] = "WAITING_QR";
 
             qrStore[instanceName] =
                 await qrcode.toDataURL(qr);
@@ -57,6 +61,8 @@ async function startClient(instanceName) {
 
     client.on("ready", () => {
 
+        sessionStatus[instanceName] = "READY";
+
         console.log(
             `${instanceName} Ready`
         );
@@ -65,6 +71,8 @@ async function startClient(instanceName) {
     });
 
     client.on("authenticated", () => {
+
+        sessionStatus[instanceName] = "AUTHENTICATED";
 
         console.log(
             `${instanceName} Authenticated`
@@ -80,7 +88,7 @@ async function startClient(instanceName) {
     });
 
     client.on("disconnected", (reason) => {
-
+        sessionStatus[instanceName] = "DISCONNECTED";
         console.log(
             `${instanceName} Disconnected:`,
             reason
@@ -153,8 +161,22 @@ async function stopClient(instanceName) {
     delete qrStore[instanceName];
 }
 
+
+function getClient(instanceName) {
+
+    return clients[instanceName];
+}
+
+
+
+function getStatus(instanceName) {
+    return sessionStatus[instanceName] || "OFFLINE";
+}
+
 module.exports = {
     startClient,
     getQR,
-    stopClient
+    stopClient,
+    getStatus,
+    getClient
 };

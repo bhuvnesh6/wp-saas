@@ -162,4 +162,69 @@ router.delete("/delete-client/:name", async (req, res) => {
     }
 });
 
+
+router.get("/status/:name", (req, res) => {
+
+    const status =
+        whatsappManager.getStatus(
+            req.params.name
+        );
+
+    res.json({
+        status
+    });
+});
+
+
+// POST send text message
+router.post("/send-message", async (req, res) => {
+
+    try {
+
+        const {
+            instanceName,
+            number,
+            message
+        } = req.body;
+
+        if (
+            !instanceName ||
+            !number ||
+            !message
+        ) {
+            return res.status(400).json({
+                error: "instanceName, number and message are required"
+            });
+        }
+
+        const client =
+            whatsappManager.getClient(
+                instanceName
+            );
+
+        if (!client) {
+            return res.status(404).json({
+                error: "WhatsApp instance not running"
+            });
+        }
+
+        await client.sendMessage(
+            `${number}@c.us`,
+            message
+        );
+
+        res.json({
+            success: true
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
 module.exports = router;
