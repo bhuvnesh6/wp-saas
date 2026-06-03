@@ -8,7 +8,7 @@ headers = {
 }
 
 payload = {
-    "instanceName": "Bhviss",
+    "instanceName": "vbh",
     "number": "917310790490",
     "message": "Hello from Python"
 }

@@ -140,37 +140,62 @@ async function startClient(instanceName) {
         );
     });
 
-    client.on("message", async message => {
+   // INCOMING MESSAGE HANDLER
+
+client.on("message", async (message) => {
 
     try {
 
         if (message.fromMe) return;
 
-        if (message.from.includes("@g.us"))
-            return;
+        if (message.from.includes("@g.us")) return;
 
-        const dbClient =
-            await ClientModel.findOne({
-                instanceName
-            });
+        console.log(
+            "MESSAGE RECEIVED:",
+            message.from,
+            message.body
+        );
 
-        if (
-            !dbClient ||
-            !dbClient.webhookUrl
-        ) {
-            return;
+        let phoneNumber = null;
+
+        try {
+
+            const contact =
+                await message.getContact();
+
+            phoneNumber =
+                contact.number ||
+                null;
+
+        } catch (err) {
+
+            console.log(
+                "Number lookup failed:",
+                err.message
+            );
         }
 
         const payload = {
 
             instanceName,
 
-            from: message.from,
+            whatsappId: message.from,
+
+            phoneNumber,
 
             body: message.body,
 
+            pushName:
+                message._data?.notifyName ||
+                message._data?.pushname ||
+                "",
+
             timestamp:
-                message.timestamp
+                message.timestamp,
+
+            messageId:
+                message.id?._serialized ||
+                null
         };
 
         console.log(
@@ -178,19 +203,32 @@ async function startClient(instanceName) {
             payload
         );
 
-        await axios.post(
-            dbClient.webhookUrl,
-            payload,
-            {
-                timeout: 10000
-            }
-        );
+        const webhookResponse =
+            await sendToWebhook(
+                dbClient.webhookUrl,
+                payload
+            );
+
+        if (
+            webhookResponse &&
+            webhookResponse.reply
+        ) {
+
+            await client.sendMessage(
+                message.from,
+                webhookResponse.reply
+            );
+
+            console.log(
+                "Auto reply sent"
+            );
+        }
 
     } catch (err) {
 
-        console.log(
-            "Webhook Error:",
-            err.message
+        console.error(
+            "Message Handler Error:",
+            err
         );
     }
 });
