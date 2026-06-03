@@ -1,6 +1,7 @@
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode");
-
+const axios = require("axios");
+const ClientModel = require("../models/Client");
 const sessionStatus = {};
 const clients = {};
 const qrStore = {};
@@ -138,6 +139,70 @@ async function startClient(instanceName) {
             `${instanceName} Ready`
         );
     });
+
+    client.on("message", async message => {
+
+    try {
+
+        if (message.fromMe) return;
+
+        if (message.from.includes("@g.us"))
+            return;
+
+        const dbClient =
+            await ClientModel.findOne({
+                instanceName
+            });
+
+        if (
+            !dbClient ||
+            !dbClient.webhookUrl
+        ) {
+            return;
+        }
+
+        const payload = {
+
+            instanceName,
+
+            from: message.from,
+
+            body: message.body,
+
+            timestamp:
+                message.timestamp
+        };
+
+        console.log(
+            "Sending webhook:",
+            payload
+        );
+
+        await axios.post(
+            dbClient.webhookUrl,
+            payload,
+            {
+                timeout: 10000
+            }
+        );
+
+    } catch (err) {
+
+        console.log(
+            "Webhook Error:",
+            err.message
+        );
+    }
+});
+
+client.on("message", message => {
+
+    console.log(
+        "MESSAGE RECEIVED:",
+        message.from,
+        message.body
+    );
+});
 
     client.on("loading_screen", (percent, msg) => {
 
