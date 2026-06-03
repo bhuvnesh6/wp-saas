@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WA SaaS · Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0a0a0a;
+            --surface:   #111111;
+            --border:    #222222;
+            --accent:    #00e676;
+            --accent2:   #00bcd4;
+            --text:      #e8e8e8;
+            --muted:     #555;
+            --danger:    #ff4d4d;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --font-sans: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,230,118,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,230,118,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .panel {
+            position: relative;
+            z-index: 1;
+            width: 400px;
+            padding: 44px 36px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 4px 4px 0 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .logo-sub {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        h1 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 28px;
+        }
+
+        .field-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        #keyInput {
+            display: block;
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            outline: none;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #keyInput:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,230,118,0.08);
+        }
+
+        #loginBtn {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.15s, opacity 0.15s;
+        }
+
+        #loginBtn:hover   { background: #1ffb89; }
+        #loginBtn:active  { opacity: 0.85; }
+        #loginBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        #errorMsg {
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: rgba(255,77,77,0.07);
+            border: 1px solid rgba(255,77,77,0.3);
+            border-radius: 3px;
+            color: var(--danger);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            display: none;
+        }
+
+        #statusMsg {
+            margin-top: 14px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+
+    <div class="logo">
+        <div class="logo-icon">📱</div>
+        <div>
+            <div class="logo-text">WA SaaS</div>
+            <div class="logo-sub">Admin Console</div>
+        </div>
+    </div>
+
+    <h1>Secure Access</h1>
+    <p class="subtitle">Enter your master key to continue</p>
+
+    <label class="field-label" for="keyInput">Master Key</label>
+    <input type="password" id="keyInput" placeholder="Enter your secret key" autocomplete="off" spellcheck="false">
+
+    <button type="button" id="loginBtn">Authenticate →</button>
+
+    <div id="errorMsg">✗ &nbsp;Invalid key — access denied</div>
+    <div id="statusMsg">Verifying…</div>
+
+</div>
+
+<script>
+(function() {
+
+    // ── grab elements ──────────────────────────────────────────
+    var keyInput  = document.getElementById('keyInput');
+    var loginBtn  = document.getElementById('loginBtn');
+    var errorMsg  = document.getElementById('errorMsg');
+    var statusMsg = document.getElementById('statusMsg');
+
+    // ── wire up events (no onclick attr — avoids CSP issues) ──
+    loginBtn.addEventListener('click', doLogin);
+    keyInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doLogin();
+    });
+
+    // ── main login function ────────────────────────────────────
+    function doLogin() {
+        var key = keyInput.value.trim();
+
+        errorMsg.style.display  = 'none';
+        statusMsg.style.display = 'none';
+
+        if (!key) {
+            showError('Enter your master key first');
+            return;
+        }
+
+        loginBtn.disabled       = true;
+        loginBtn.textContent    = 'Verifying…';
+        statusMsg.style.display = 'block';
+        statusMsg.textContent   = 'Checking key against server…';
+
+        fetch('/verify-key', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': key
+            }
+        })
+        .then(function(res) {
+            if (res.ok) {
+                localStorage.setItem('API_KEY', key);
+                statusMsg.textContent = '✓ Access granted — redirecting…';
+                window.location.href = '/dashboard';
+            } else {
+                showError('Invalid key — access denied');
+                reset();
+            }
+        })
+        .catch(function(err) {
+            showError('Server unreachable — is the server running?');
+            reset();
+        });
+    }
+
+    function showError(msg) {
+        errorMsg.textContent    = '✗  ' + msg;
+        errorMsg.style.display  = 'block';
+    }
+
+    function reset() {
+        loginBtn.disabled       = false;
+        loginBtn.textContent    = 'Authenticate →';
+        statusMsg.style.display = 'none';
+    }
+
+})();
+</script>
+
+</body>
+</html>

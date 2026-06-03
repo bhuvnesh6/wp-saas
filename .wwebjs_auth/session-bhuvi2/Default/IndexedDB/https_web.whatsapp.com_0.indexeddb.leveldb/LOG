@@ -1,0 +1,17 @@
+2026/06/02-13:43:19.962 898 Reusing MANIFEST C:\Users\rajpt\Desktop\wp-saas\.wwebjs_auth\session-bhuvi2\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/06/02-13:43:19.964 898 Recovering log #50
+2026/06/02-13:43:21.060 898 Reusing old log C:\Users\rajpt\Desktop\wp-saas\.wwebjs_auth\session-bhuvi2\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000050.log 
+2026/06/02-13:47:49.330 30c4 Level-0 table #57: started
+2026/06/02-13:47:49.384 30c4 Level-0 table #57: 1143242 bytes OK
+2026/06/02-13:47:49.387 30c4 Delete type=0 #50
+2026/06/02-13:48:19.013 f10 Compacting 1@1 + 4@2 files
+2026/06/02-13:48:19.210 f10 Generated table #58@1: 43354 keys, 2206050 bytes
+2026/06/02-13:48:19.494 f10 Generated table #59@1: 40212 keys, 2195663 bytes
+2026/06/02-13:48:19.557 f10 Generated table #60@1: 36006 keys, 955655 bytes
+2026/06/02-13:48:19.557 f10 Compacted 1@1 + 4@2 files => 5357368 bytes
+2026/06/02-13:48:19.558 f10 compacted to: files[ 0 0 3 0 0 0 0 ]
+2026/06/02-13:48:19.559 f10 Delete type=2 #45
+2026/06/02-13:48:19.559 f10 Delete type=2 #52
+2026/06/02-13:48:19.559 f10 Delete type=2 #53
+2026/06/02-13:48:19.559 f10 Delete type=2 #54
+2026/06/02-13:48:19.559 f10 Delete type=2 #57
